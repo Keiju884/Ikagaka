@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- DialogのList -->
+<DialogList>
+	<!-- DialogのID -->
+	<Dialog ID="1">
+		<!-- 感情 その要素の名前と同じ画像をCharacterに表示させる -->
+		<Emotion>Normal</Emotion>
+		<!-- 会話内容 -->
+		<Text>一見すると島はちりぢりになっていて孤独に見えるけれど、
+海の底は陸地続きになっているの</Text>
+	</Dialog>
+	<Dialog ID="2">
+		<Emotion>Smile</Emotion>
+		<Text>自分の本当の想いでさえ、自分に100%伝えるのは不可能なの</Text>
+	</Dialog>
+	<Dialog ID="3">
+		<Emotion>Normal</Emotion>
+		<Text>大丈夫、安心して
+私はあなたに干渉しない
+ただずっとあなたに微笑み続けるだけなの</Text>
+	</Dialog>
+	<Dialog ID="4">
+		<Emotion>Emotionless</Emotion>
+		<Text>自分の痛みは言葉に表せても、痛み自体は他人には伝わらないの
+「その気持ち分かるよ」なんて気軽に言っちゃダメなの</Text>
+	</Dialog>
+	<Dialog ID="5">
+		<Emotion>Normal</Emotion>
+		<Text>次に流行る言語は画像や動画なの
+言葉だけでは伝えられない情報を伝えることができるの</Text>
+	</Dialog>
+	<Dialog ID="6">
+		<Emotion>Smile</Emotion>
+		<Text>愛想笑いや痛みを堪える為の笑いではなく、
+心の底から笑える日が来ると嬉しいの</Text>
+	</Dialog>
+	<Dialog ID="7">
+		<Emotion>Smile</Emotion>
+		<Text>相手とまばたきを合わせるのが
+コミュニケーションのコツらしいの</Text>
+	</Dialog>
+</DialogList>

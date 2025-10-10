@@ -1,0 +1,299 @@
+package ikagaka;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import bean.CharacterModel;
+import bean.Vector2Int;
+import bean.WindowInfo;
+import handler.InputListener;
+import handler.ListenerHandler;
+import utils.WindowDetailUtil;
+
+public class CharacterPanel extends JPanel implements ListenerHandler
+{
+	private List<CharacterModel> characterList;
+
+	private List<CharacterModel> activeCharacterList;
+
+	private CharacterModel clickModel;
+
+	private CharacterMenu menu;
+
+	private boolean isLeftClick = false;
+
+	private Vector2Int clickPosition = new Vector2Int();
+
+	private Vector2Int mousePosition = new Vector2Int();
+
+	private List<WindowInfo> windows = new ArrayList<WindowInfo>();
+
+	private PanelPaintDetail paintDetail;
+
+	public CharacterPanel(List<CharacterModel> characterList)
+	{
+		this.characterList = characterList;
+		this.activeCharacterList = new ArrayList<CharacterModel>();
+		this.clickModel = null;
+		this.menu = new CharacterMenu(this, this.characterList);
+		this.paintDetail = new PanelPaintDetail();
+		InputListener listener = new InputListener();
+		listener.register(this, this);
+		createCharacterModel(this.characterList.getFirst());
+		setOpaque(false); // 背景透明
+	}
+
+	public void update()
+	{
+		windows = WindowDetailUtil.getWindows();
+		if(activeCharacterList.size() > 0)
+		{
+			for (CharacterModel model : activeCharacterList)
+			{
+				moveWindow(model);
+				model.update();
+			}
+			CharacterModel clickedModel = clickModel;
+			if(clickedModel != null)
+			{
+				moveCharacter_Mouse(clickedModel);
+			}
+		}
+	}
+
+	@Override
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g.create();
+		if(activeCharacterList.size() > 0)
+		{
+			for (CharacterModel model : activeCharacterList)
+			{
+				paintDetail.paintCharacter(model, g2d);
+				if(model.talkDetail.isTalk() || (model.talkDetail.isTalkEnd() && model.paintDetail.getTextBoxAlpha() > 0))
+				{
+					paintDetail.paintTake(model, g2d);
+				}
+			}
+			g2d.dispose();
+		}
+	}
+
+	public void createCharacterModel(CharacterModel model)
+	{
+		CharacterModel createModel = new CharacterModel(model);
+		createModel.setPosition(createModel.getPosition().x - activeCharacterList.size() * 30,
+				createModel.getPosition().y);
+		activeCharacterList.add(createModel);
+	}
+
+	public void removeCharacterModel()
+	{
+		if(clickModel != null)
+		{
+			activeCharacterList.remove(clickModel);
+		}
+		if(activeCharacterList.size() == 0)
+		{
+			System.exit(0);
+		}
+	}
+
+	public void changeCharacterModel(CharacterModel model)
+	{
+		if(clickModel != null && !clickModel.getPackageId().equals(model.getPackageId()))
+		{
+			Vector2Int p = clickModel.getPosition();
+			activeCharacterList.remove(clickModel);
+			CharacterModel createModel = new CharacterModel(model);
+			createModel.setPosition(p);
+			activeCharacterList.add(createModel);
+		}
+
+	}
+
+	public void changeCharacterTalkTime(int talkTimeSec)
+	{
+		if(clickModel != null)
+		{
+			int time = talkTimeSec * 60;
+			clickModel.talkDetail.changeTalkStart(time);
+		}
+	}
+
+	public void stopTalkTime(boolean isStop)
+	{
+		if(clickModel != null)
+		{
+			clickModel.talkDetail.setStopNextTalk(!isStop);
+		}
+	}
+
+	private void characterListMoveLast(CharacterModel clickedModel)
+	{
+		if(clickedModel != null)
+		{
+			activeCharacterList.remove(clickedModel);
+			activeCharacterList.add(clickedModel);
+		}
+	}
+
+	private void moveCharacter_Mouse(CharacterModel model)
+	{
+
+		if(model != null && isLeftClick)
+		{
+			model.isDragMove = true;
+			Point p = MouseInfo.getPointerInfo().getLocation();
+			int xMoved = p.x - clickPosition.x;
+			int yMoved = p.y - clickPosition.y;
+			int y = model.getStopPostion().y + yMoved;
+			if(WindowDetailUtil.getWorkScreenBottom().y < p.y + 100)
+			{
+				y = WindowDetailUtil.getWorkScreenBottom().y;
+			}
+			WindowInfo window = mouseOnWindow(p);
+			if(window != null)
+			{
+				model.setOnWindow(window);
+				y = window.rect.top;
+			}
+			else
+			{
+				model.setOnWindow(null);
+			}
+			model.setPosition(model.getStopPostion().x + xMoved, y);
+		}
+		else
+		{
+			model.isDragMove = false;
+		}
+	}
+
+	private void moveWindow(CharacterModel model)
+	{
+		WindowInfo onWindow = model.getOnWindow();
+		WindowInfo updateWindow = null;
+		for (WindowInfo win : this.windows)
+		{
+			if(model.getOnWindow() != null && model.getOnWindow().hWnd.equals(win.hWnd))
+			{
+				updateWindow = win;
+			}
+		}
+		if(updateWindow != null && !onWindow.isMinimized())
+		{
+			int xMoved = updateWindow.rect.toRectangle().x - onWindow.rect.toRectangle().x;
+			int yMoved = updateWindow.rect.toRectangle().y - onWindow.rect.toRectangle().y;
+			model.setOnWindow(updateWindow);
+			model.setPosition(model.getPosition().x + xMoved, model.getPosition().y + yMoved);
+		}
+	}
+
+	private WindowInfo mouseOnWindow(Point p)
+	{
+		WindowInfo window = null;
+		for (WindowInfo win : this.windows)
+		{
+			if(p.x >= win.rect.left && p.x <= win.rect.right)
+			{
+				boolean isMouseY = p.y + 100 > win.rect.top && p.y <= win.rect.top;
+				if(p.y + 100 > win.rect.top && p.y <= win.rect.top)
+				{
+					if(window == null || window.rect.top < win.rect.top)
+					{
+						window = win;
+					}
+				}
+			}
+		}
+		return window;
+	}
+
+	@Override
+	public void onMouseMove(MouseEvent e)
+	{
+		mousePosition.set(e.getX(), e.getY());
+	}
+
+	@Override
+	public void onMouseDrag(MouseEvent e)
+	{
+		mousePosition.set(e.getX(), e.getY());
+	}
+
+	@Override
+	public void onKey(KeyEvent e)
+	{
+
+	}
+
+	@Override
+	public void onMouseClicked(MouseEvent e)
+	{
+
+	}
+
+	@Override
+	public void onMousePressed(MouseEvent e)
+	{
+		clickPosition.set(e.getX(), e.getY());
+		for (CharacterModel model : activeCharacterList)
+		{
+			if(model.contains(clickPosition))
+			{
+				clickModel = model;
+				break;
+			}
+		}
+		if(SwingUtilities.isLeftMouseButton(e))
+		{
+			isLeftClick = true;
+			characterListMoveLast(clickModel);
+		}
+		if(clickModel != null)
+		{
+			menu.showMenu(e, clickModel.talkDetail.isStopNextTalk());
+		}
+	}
+
+	@Override
+	public void onMouseReleased(MouseEvent e)
+	{
+		if(SwingUtilities.isLeftMouseButton(e))
+		{
+			isLeftClick = false;
+		}
+		if(clickModel != null)
+		{
+			menu.showMenu(e, clickModel.talkDetail.isStopNextTalk());
+		}
+	}
+
+	@Override
+	public void onMouseWheelMoved(MouseWheelEvent e)
+	{
+		if(clickModel != null)
+		{
+			if(e.getWheelRotation() == -1)
+			{
+				clickModel.paintDetail.changeImageSizeRate(-0.05);
+			}
+			else if(e.getWheelRotation() == 1)
+			{
+				clickModel.paintDetail.changeImageSizeRate(0.05);
+			}
+		}
+	}
+}

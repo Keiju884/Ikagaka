@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CharacterとDialogを紐付ける -->
+<SetDialog>
+	<!-- シチュエーション -->
+	<Normal>
+		<!-- 表示させるDialog -->
+		<Dialog>1</Dialog>
+		<Dialog>2</Dialog>
+		<Dialog>3</Dialog>
+		<Dialog>4</Dialog>
+<Dialog>5</Dialog>
+<Dialog>6</Dialog>
+<Dialog>7</Dialog>
+	</Normal>
+</SetDialog>

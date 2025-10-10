@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+	<!-- パッケージの名前 -->
+	<Name>HA-L-F2-51</Name>
+	<!-- 製作者 -->
+	<Actor>パースペクティブ</Actor>
+	<!-- パッケージID -->
+	<PackageId>HALF251</PackageId>
+	<!-- パッケージの説明 -->
+	<Description>HA-L-F2-51</Description>
+</Package>
