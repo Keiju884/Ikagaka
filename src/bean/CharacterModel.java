@@ -32,7 +32,7 @@ public class CharacterModel
 		this.onWindow = null;
 		this.talkDetail = new CharacterTalkDetail(this, dialogMap);
 		this.paintDetail = new CharacterPaintDetail(this, imageList, textBoxPivot);
-		updatePaintPosition();
+		paintDetail.updatePaintPosition();
 	}
 
 	public CharacterModel(CharacterModel original)
@@ -44,21 +44,14 @@ public class CharacterModel
 		this.isDragMove = false;
 		this.onWindow = null;
 		this.talkDetail = new CharacterTalkDetail(this, original.talkDetail.dialogMap);
-		this.paintDetail = new CharacterPaintDetail(original, original.paintDetail.getImageList(),
+		this.paintDetail = new CharacterPaintDetail(this, original.paintDetail.getImageList(),
 				original.paintDetail.textBoxPivot);
-		updatePaintPosition();
+		paintDetail.updatePaintPosition();
 	}
 
 	public void setStopPostion()
 	{
 		stopPostion.set(position);
-	}
-
-	public void updatePaintPosition()
-	{
-		int x = (int) (this.getPosition().x - (paintDetail.getNowImage().pivot.x * 1.5 * paintDetail.getImageSizeRate()));
-		int y = (int) (this.getPosition().y - paintDetail.getNowImage().pivot.y * paintDetail.getImageSizeRate());
-		this.paintDetail.paintPosition = new Vector2Int(x, y);
 	}
 
 	public boolean contains(Vector2Int mousePos)
@@ -85,7 +78,7 @@ public class CharacterModel
 	 */
 	public void update()
 	{
-		updatePaintPosition();
+		paintDetail.updatePaintPosition();
 		if(paintDetail.isTextBoxAlphaZero())
 		{
 			paintDetail.resetTextBoxAlpha();
@@ -128,7 +121,7 @@ public class CharacterModel
 
 	public Vector2Int getPosition()
 	{
-		return position;
+		return this.position;
 	}
 
 	public void setPosition(int x, int y)

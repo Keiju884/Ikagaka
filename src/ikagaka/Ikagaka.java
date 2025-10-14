@@ -8,5 +8,14 @@ public class Ikagaka
 		LoadCharacterFile load = new LoadCharacterFile();
 		new CharacterFrame(load.characterList);
 	}
+	
+	public static void exit(String packageId)
+	{
+		if(packageId != null && !packageId.isEmpty())
+		{
+			LoadSaveFile.Instance().save(packageId);
+		}
+		System.exit(0);
+	}
 
 }

@@ -6,7 +6,7 @@ import utils.StreamUtil;
 
 public class CharacterPaintDetail
 {
-	private CharacterModel owner;
+	public CharacterModel owner;
 
 	private List<CharacterImage> imageList;
 
@@ -30,12 +30,21 @@ public class CharacterPaintDetail
 		this.nowFrontImage = getNowFrontImage();
 		this.textBoxPivot = textBoxPivot;
 		this.imageSizeRate = 1.0;
+		this.paintPosition = new Vector2Int();
 	}
+
+	public void updatePaintPosition()
+	{
+		int x = (int) (owner.getPosition().x - (getNowImage().pivot.x * 1.5 * getImageSizeRate()));
+		int y = (int) (owner.getPosition().y - getNowImage().pivot.y * getImageSizeRate());
+		this.paintPosition.set(x, y);
+	}
+
 	public boolean isTextBoxAlphaZero()
 	{
 		return textBoxAlpha <= 0;
 	}
-	
+
 	public void disTextBoxAlpha()
 	{
 		this.textBoxAlpha -= 5;
@@ -65,7 +74,7 @@ public class CharacterPaintDetail
 	{
 		return StreamUtil.filterFirst(imageList, x -> x.imageName.matches(emotion + "_Front$"));
 	}
-	
+
 	public CharacterImage getDefaultImage()
 	{
 		CharacterImage image = StreamUtil.filterFirst(imageList, x -> x.imageName.equals("Normal"));
@@ -75,7 +84,7 @@ public class CharacterPaintDetail
 		}
 		return null;
 	}
-	
+
 	public void changeNowImages(String emotion)
 	{
 		this.nowImage = getImage(emotion);
@@ -110,6 +119,13 @@ public class CharacterPaintDetail
 		return textBoxAlpha;
 	}
 
+	public Vector2Int getCenterPosition()
+	{
+		int x = getPaintPosition().x + (int)(getNowImage().pivot.x * getImageSizeRate());
+		int y = getPaintPosition().y + (int)(getNowImage().pivot.y * getImageSizeRate());
+		return new Vector2Int(x, y);
+	}
+
 	public void changeImageSizeRate(double rate)
 	{
 		this.imageSizeRate += rate;
@@ -128,7 +144,12 @@ public class CharacterPaintDetail
 		return this.imageSizeRate;
 	}
 	
-	public  List<CharacterImage> getImageList()
+	public Vector2Int getImageSize()
+	{
+		return new Vector2Int((int)(getNowImage().image.getWidth() * getImageSizeRate()), (int)(getNowImage().image.getHeight() * getImageSizeRate()));
+	}
+
+	public List<CharacterImage> getImageList()
 	{
 		return this.imageList;
 	}

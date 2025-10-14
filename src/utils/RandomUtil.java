@@ -45,7 +45,7 @@ public final class RandomUtil
 	{
 		if(list == null || list.isEmpty())
 		{
-			throw new IllegalArgumentException("List is null or empty");
+			return null;
 		}
 		return list.get(random().nextInt(list.size()));
 	}
@@ -54,7 +54,7 @@ public final class RandomUtil
 	{
 		if(ary == null || ary.length == 0)
 		{
-			throw new IllegalArgumentException("Array is null or empty");
+			return null;
 		}
 		return ary[random().nextInt(ary.length)];
 	}

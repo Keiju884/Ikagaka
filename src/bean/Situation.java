@@ -15,24 +15,24 @@ public enum Situation
 
 	public static  Situation getTimeSituation()
 	{
-		LocalDateTime now = LocalDateTime.now();
-		if(now.getHour() >= 5 && now.getHour() <= 10)
+		int hour = LocalDateTime.now().getHour();
+		if(hour >= 5 && hour <= 10)
 		{
 			return Situation.Moning;
 		}
-		else if(now.getHour() >= 11 && now.getHour() <= 14)
+		else if(hour >= 11 && hour <= 14)
 		{
 			return Situation.Noon;
 		}
-		else if(now.getHour() >= 15 && now.getHour() <=18)
+		else if(hour >= 15 && hour <=18)
 		{
 			return Situation.Evening;
 		}
-		else if(now.getHour() >= 19 && now.getHour() <= 23)
+		else if(hour >= 19 && hour <= 23)
 		{
 			return Situation.Night;
 		}
-		else if(now.getHour() >= 0 && now.getHour() <= 4)
+		else if(hour >= 0 && hour <= 4)
 		{
 			return Situation.Midnight;
 		}
@@ -41,6 +41,7 @@ public enum Situation
 	
 	public static  Situation getTimeorNormalSituation()
 	{
-		return RandomUtil.random().nextInt() != 0 ? Situation.Normal : getTimeSituation();
+		Situation s = RandomUtil.nextPlus(1) != 0 ? Situation.Normal : getTimeSituation();
+		return s;
 	}
 }

@@ -98,8 +98,9 @@ public final class WindowDetailUtil
 
 			// 特定ウィンドウをスキップ
 			if(title.contains("如何か"))
+			{
 				return true;
-
+			}
 			list.add(new WindowInfo(hWnd, rect, title));
 			return true;
 		}, null);

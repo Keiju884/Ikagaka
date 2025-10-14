@@ -1,5 +1,7 @@
 package bean;
 
+import java.text.MessageFormat;
+
 import com.sun.jna.platform.win32.WinDef.HWND;
 import com.sun.jna.platform.win32.WinDef.RECT;
 
@@ -16,6 +18,11 @@ public class WindowInfo
 		this.hWnd = hWnd;
 		this.rect = rect;
 		this.title = title;
+	}
+	
+	public String toString()
+	{
+		return MessageFormat.format("[{0}:{1}:{2}]", hWnd, rect,title);
 	}
 
 	public boolean isMinimized()

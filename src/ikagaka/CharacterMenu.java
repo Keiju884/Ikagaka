@@ -37,7 +37,7 @@ public class CharacterMenu extends JPopupMenu
 		JMenuItem exitCharacterMenuItem = new JMenuItem("終了");
 		
 		removeCharacterMenuItem.addActionListener(e -> this.panel.removeCharacterModel());
-		exitCharacterMenuItem.addActionListener(e -> System.exit(0));
+		exitCharacterMenuItem.addActionListener(e -> this.panel.exit());
 		
 		this.add(talkTimeMenu);
 		this.add(createCharacterMenu);

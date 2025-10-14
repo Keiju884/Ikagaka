@@ -18,6 +18,7 @@ import bean.Vector2Int;
 import bean.WindowInfo;
 import handler.InputListener;
 import handler.ListenerHandler;
+import utils.StreamUtil;
 import utils.WindowDetailUtil;
 
 public class CharacterPanel extends JPanel implements ListenerHandler
@@ -49,7 +50,17 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 		this.paintDetail = new PanelPaintDetail();
 		InputListener listener = new InputListener();
 		listener.register(this, this);
-		createCharacterModel(this.characterList.getFirst());
+		CharacterModel createModel = null;
+		String packageId = LoadSaveFile.Instance().load();
+		if(packageId != null && !packageId.isEmpty() && this.characterList.stream().anyMatch(x -> x.getPackageId().equals(packageId)))
+		{
+			createModel = StreamUtil.filterFirst(this.characterList, x -> x.getPackageId().equals(packageId));
+		}
+		else
+		{
+			createModel = this.characterList.getFirst();
+		}
+		createCharacterModel(createModel);
 		setOpaque(false); // 背景透明
 	}
 
@@ -106,7 +117,7 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 		}
 		if(activeCharacterList.size() == 0)
 		{
-			System.exit(0);
+			exit();
 		}
 	}
 
@@ -121,6 +132,10 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 			activeCharacterList.add(createModel);
 		}
 
+	}
+	public void exit()
+	{
+		Ikagaka.exit(this.activeCharacterList.getLast().getPackageId());
 	}
 
 	public void changeCharacterTalkTime(int talkTimeSec)
@@ -159,11 +174,7 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 			int xMoved = p.x - clickPosition.x;
 			int yMoved = p.y - clickPosition.y;
 			int y = model.getStopPostion().y + yMoved;
-			if(WindowDetailUtil.getWorkScreenBottom().y < p.y + 100)
-			{
-				y = WindowDetailUtil.getWorkScreenBottom().y;
-			}
-			WindowInfo window = mouseOnWindow(p);
+			WindowInfo window = mouseOnWindow(p,model.paintDetail.getCenterPosition());
 			if(window != null)
 			{
 				model.setOnWindow(window);
@@ -174,6 +185,11 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 				model.setOnWindow(null);
 			}
 			model.setPosition(model.getStopPostion().x + xMoved, y);
+			if(WindowDetailUtil.getWorkScreenBottom().y < y)
+			{
+				y = WindowDetailUtil.getWorkScreenBottom().y;
+				model.setPosition(model.getPosition().x, y);
+			}
 		}
 		else
 		{
@@ -196,24 +212,31 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 		{
 			int xMoved = updateWindow.rect.toRectangle().x - onWindow.rect.toRectangle().x;
 			int yMoved = updateWindow.rect.toRectangle().y - onWindow.rect.toRectangle().y;
+			int y = model.getPosition().y + yMoved;
 			model.setOnWindow(updateWindow);
-			model.setPosition(model.getPosition().x + xMoved, model.getPosition().y + yMoved);
+			if(WindowDetailUtil.getWorkScreenBottom().y < model.paintDetail.getCenterPosition().y)
+			{
+				y = WindowDetailUtil.getWorkScreenBottom().y;
+			}
+			model.setPosition(model.getPosition().x + xMoved, y);
 		}
 	}
 
-	private WindowInfo mouseOnWindow(Point p)
+	private WindowInfo mouseOnWindow(Point p, Vector2Int pos)
 	{
 		WindowInfo window = null;
 		for (WindowInfo win : this.windows)
 		{
 			if(p.x >= win.rect.left && p.x <= win.rect.right)
 			{
-				boolean isMouseY = p.y + 100 > win.rect.top && p.y <= win.rect.top;
 				if(p.y + 100 > win.rect.top && p.y <= win.rect.top)
 				{
-					if(window == null || window.rect.top < win.rect.top)
+					if(pos.y + 100 > win.rect.top && pos.y <= win.rect.top)
 					{
-						window = win;
+						if(window == null || window.rect.top < win.rect.top)
+						{
+							window = win;
+						}
 					}
 				}
 			}

@@ -39,15 +39,21 @@ public class Vector2Int
 		this.x = x;
 		this.y = y;
 	}
-
-	public String toString()
-	{
-		return MessageFormat.format("[{0}:{1}]", x, y);
-	}
-
 	public void set(Vector2Int vec)
 	{
 		this.x = vec.x;
 		this.y = vec.y;
+	}
+	
+	public void add(Vector2Int vec)
+	{
+		this.x += vec.x;
+		this.y += vec.y;
+	}
+	
+
+	public String toString()
+	{
+		return MessageFormat.format("[{0}:{1}]", x, y);
 	}
 }

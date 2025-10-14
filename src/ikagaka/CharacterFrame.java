@@ -25,7 +25,7 @@ public class CharacterFrame extends JFrame
 		    JLabel label = new JLabel("Characterが存在しません");
 		    label.setForeground(Color.RED);
 		    JOptionPane.showMessageDialog(this, label,"エラー",JOptionPane.ERROR_MESSAGE);
-		    System.exit(1);
+		    Ikagaka.exit(null);
 		}
 		this.characterList = characterList;
 		this.panle = new CharacterPanel(this.characterList);

@@ -19,13 +19,15 @@ public class PanelPaintDetail
 		Vector2Int pos = model.paintDetail.getPaintPosition();
 		g2d.setClip(getPaintClip(model));
 		BufferedImage image = model.paintDetail.getNowImage().image;
-		g2d.drawImage(image, pos.x, pos.y,(int)(image.getWidth() * model.paintDetail.getImageSizeRate()),(int)(image.getHeight() * model.paintDetail.getImageSizeRate()), null);
+		Vector2Int imageSize = model.paintDetail.getImageSize();
+		g2d.drawImage(image, pos.x, pos.y, imageSize.x, imageSize.y, null);
 		if(model.paintDetail.getNowFrontImage() != null)
 		{
 			BufferedImage frontImage = model.paintDetail.getNowFrontImage().image;
 			g2d.setClip(null);
-			g2d.drawImage(frontImage, pos.x, pos.y,(int)(frontImage.getWidth() * model.paintDetail.getImageSizeRate()),(int)(frontImage.getHeight() * model.paintDetail.getImageSizeRate()), null);
+			g2d.drawImage(frontImage, pos.x, pos.y, imageSize.x, imageSize.y, null);
 		}
+
 	}
 
 	public void paintTake(CharacterModel model, Graphics2D g2d)
@@ -39,14 +41,14 @@ public class PanelPaintDetail
 		Vector2Int textSize = getTextSize(g2d, model.talkDetail.getNowDialog());
 		Vector2Int textBoxSize = getTextBoxSize(textSize, model.talkDetail.getNowDialog().text.length, padding);
 		int textBoxPosY = model.paintDetail.getPaintTextBoxY() - textBoxSize.y;
+		int textBoxRectX = getRectX(model.paintDetail.getCenterPosition().x, textBoxSize.x);
+		int textRectX = getRectX(model.paintDetail.getCenterPosition().x, textSize.x);
 
-		int rectX = getRectX(model.paintDetail.getPaintPosition().x, model.paintDetail.getNowImage().image.getTileWidth(), textBoxSize.x);
-
-		paintTextBox(g2d, alpha, rectX, textBoxPosY, textBoxSize);
-		paintText(model.talkDetail.getNowDialog(), g2d, alpha, rectX + padding, textBoxPosY, textSize);
+		paintTextBox(g2d, textBoxRectX, textBoxPosY, textBoxSize, alpha);
+		paintText(model.talkDetail.getNowDialog(), g2d, textRectX, textBoxPosY, textSize, alpha);
 	}
 
-	private void paintTextBox(Graphics2D g2d, int alpha, int rectX, int textBoxPosY, Vector2Int textBoxSize)
+	private void paintTextBox(Graphics2D g2d, int rectX, int textBoxPosY, Vector2Int textBoxSize, int alpha)
 	{
 		g2d.setColor(new Color(255, 255, 255, alpha));
 		g2d.fillRoundRect(rectX, textBoxPosY, textBoxSize.x, textBoxSize.y, 15, 15);
@@ -56,8 +58,8 @@ public class PanelPaintDetail
 
 	}
 
-	private void paintText(CharacterDialog dialg, Graphics2D g2d, int alpha, int rectX, int textBoxPosY,
-			Vector2Int textSize)
+	private void paintText(CharacterDialog dialg, Graphics2D g2d, int rectX, int textBoxPosY,
+			Vector2Int textSize, int alpha)
 	{
 		g2d.setFont(dialg.font);
 		g2d.setColor(new Color(0, 0, 0, alpha));
@@ -88,10 +90,11 @@ public class PanelPaintDetail
 		return new Vector2Int(x, y);
 	}
 
-	private int getRectX(int paintPosX, int imageWidth, int textBoxSizeX)
+	private int getRectX(int centerX, int textBoxSizeX)
 	{
-		return paintPosX + (imageWidth / 2) - (textBoxSizeX / 2);
+		return centerX - (textBoxSizeX / 2);
 	}
+
 	private Area getPaintClip(CharacterModel model)
 	{
 		Area areaA = new Area(WindowDetailUtil.getAllScreenBounds());
