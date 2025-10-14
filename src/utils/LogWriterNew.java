@@ -9,14 +9,23 @@ import java.util.Date;
 
 public class LogWriterNew
 {
+	private static final String OUTPUT_DIR = "Log";
 
-	public static SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
+	
+	public static synchronized void deleteLogFile()
+	{
+		String file_name = OUTPUT_DIR + File.separator + "appLog.log";
+		File file = new File(file_name);
+		if(file.exists())
+		{
+			file.delete();
+		}
+	}
 
 	public static synchronized void writeLog(String text)
 	{
 		Calendar calendar = Calendar.getInstance();
-
-		String OUTPUT_DIR = "Log";
 
 		Date date = calendar.getTime();
 

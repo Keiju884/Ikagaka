@@ -57,7 +57,7 @@ public class CharacterPaintDetail
 
 	public int getPaintTextBoxY()
 	{
-		return this.paintPosition.y - this.textBoxPivot;
+		return this.getCenterPosition().y - this.textBoxPivot;
 	}
 
 	public void setPaintPosition(Vector2Int paintPosition)

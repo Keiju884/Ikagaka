@@ -1,8 +1,6 @@
 package ikagaka;
 
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class LoadCharacterFile
 		List<CharacterModel> characters = new ArrayList<>();
 
 		File[] characterDirs = baseDir.listFiles(File::isDirectory);
-		if(characterDirs == null)
+		if (characterDirs == null)
 		{
 			LogWriterNew.writeLog("No Directory:" + baseDir);
 			return characters;
@@ -54,39 +52,41 @@ public class LoadCharacterFile
 			// 各キャラクターのサブフォルダ/
 			File spriteDir = new File(charDir, "Sprite");
 			File dataDir = new File(charDir, "Date");
-			File stageInfoFile = new File(charDir, "StageInfo.xml");
+			File characterInfoFile = new File(charDir, "CharacterInfo.xml");
 
-			File characterInfoFile = new File(dataDir, "CharacterInfo.xml");
+			File spriteInfoFile = new File(dataDir, "SpriteInfo.xml");
 			File dialogInfoFile = new File(dataDir, "DialogInfo.xml");
 			File setDialogFile = new File(dataDir, "SetDialog.xml");
 
-			if(!stageInfoFile.exists())
-			{
-				LogWriterNew.writeLog("StageInfo.xml が存在しません: " + stageInfoFile);
-				continue;
-			}
-			if(!characterInfoFile.exists())
+			if (!characterInfoFile.exists())
 			{
 				LogWriterNew.writeLog("CharacterInfo.xml が存在しません: " + characterInfoFile);
 				continue;
 			}
-			if(!dialogInfoFile.exists())
+			if (!spriteInfoFile.exists())
+			{
+				LogWriterNew.writeLog("SpriteInfo.xml が存在しません: " + spriteInfoFile);
+				continue;
+			}
+			if (!dialogInfoFile.exists())
 			{
 				LogWriterNew.writeLog("DialogInfo.xml が存在しません: " + dialogInfoFile);
 				continue;
 			}
-			if(!setDialogFile.exists())
+			if (!setDialogFile.exists())
 			{
 				LogWriterNew.writeLog("SetDialog.xml が存在しません: " + setDialogFile);
 				continue;
 			}
+			String name = "";
 			String packageId = "";
 			try
 			{
-				Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stageInfoFile);
+				Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(characterInfoFile);
 				Element root = doc.getDocumentElement();
-				String s = root.getElementsByTagName("PackageId").item(0).getTextContent().trim();
-				if(characters.stream().anyMatch(x -> x.getPackageId().equals(s)))
+				name = getTextContent(root, "Name");
+				String s = getTextContent(root, "PackageId");
+				if (characters.stream().anyMatch(x -> x.getPackageId().equals(s)))
 				{
 					LogWriterNew.writeLog("同じpackageIdが既に存在します:" + s);
 					continue;
@@ -95,7 +95,7 @@ public class LoadCharacterFile
 			}
 			catch (Exception e)
 			{
-				LogWriterNew.writeLog("StageInfo.xml 読み込み失敗: " + stageInfoFile);
+				LogWriterNew.writeLog("CharacterInfo.xml 読み込み失敗: " + characterInfoFile);
 				LogWriterNew.writeLog(e.toString());
 				e.printStackTrace();
 				continue;
@@ -108,14 +108,12 @@ public class LoadCharacterFile
 				Map<Situation, List<CharacterDialog>> dialogMap = setSituation(setDialogFile, dialogList);
 
 				// Characterモデル作成
-				CharacterModel model = loadCharacterModel(charDir.getName(), packageId, characterInfoFile, spriteDir,
-						dialogMap);
+				CharacterModel model = loadCharacterModel(name, packageId, spriteInfoFile, spriteDir, dialogMap);
 
 				characters.add(model);
 				LogWriterNew.writeLog("読み込み成功: " + model.getName());
 
-			}
-			catch (Exception e)
+			} catch (Exception e)
 			{
 				LogWriterNew.writeLog("読み込み失敗: " + charDir.getName());
 				LogWriterNew.writeLog(e.toString());
@@ -126,25 +124,24 @@ public class LoadCharacterFile
 		return characters;
 	}
 
-	private static CharacterModel loadCharacterModel(String folderName, String packageId, File xmlFile, File spriteDir,
+	private static CharacterModel loadCharacterModel(String name,String packageId, File spriteInfoFile, File spriteDir,
 			Map<Situation, List<CharacterDialog>> dialogMap)
 			throws Exception
 	{
 		// XML読み込み
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(xmlFile);
+		Document doc = builder.parse(spriteInfoFile);
 		doc.getDocumentElement().normalize();
 
 		// <Character> 要素を取得
-		NodeList charNodes = doc.getElementsByTagName("Character");
-		if(charNodes.getLength() == 0)
+		NodeList charNodes = doc.getElementsByTagName("Sprite");
+		if (charNodes.getLength() == 0)
 		{
-			throw new RuntimeException("CharacterInfo.xml に <Character> タグが存在しません: " + xmlFile);
+			throw new RuntimeException("SpriteInfo.xml に <Sprite> タグが存在しません: " + spriteInfoFile);
 		}
 		Element charElem = (Element) charNodes.item(0);
 
-		String name = getTextContent(charElem, "Name");
 		int textbox = Integer.parseInt(getTextContent(charElem, "TextBoxPivot"));
 
 		// Sprite設定読み込み
@@ -166,7 +163,7 @@ public class LoadCharacterFile
 		// 画像読み込み
 		List<CharacterImage> imageList = new ArrayList<>();
 		File[] imageFiles = spriteDir.listFiles((dir, name1) -> name1.toLowerCase().endsWith(".png"));
-		if(imageFiles != null)
+		if (imageFiles != null)
 		{
 			for (File imageFile : imageFiles)
 			{
@@ -174,7 +171,7 @@ public class LoadCharacterFile
 				String imageName = imageFile.getName().replace(".png", "");
 
 				CharacterImage setting = StreamUtil.filterFirst(spriteSettings, x -> imageName.contains(x.imageName));
-				if(setting != null)
+				if (setting != null)
 				{
 					//image = resizeImage(image, setting);
 					int x = (int) Math.round(setting.pivot.x * setting.scale);
@@ -185,9 +182,8 @@ public class LoadCharacterFile
 			}
 		}
 
-		boolean hasNormal = imageFiles != null
-				&& Arrays.stream(imageFiles).anyMatch(f -> f.getName().equalsIgnoreCase("normal.png"));
-		if(!hasNormal)
+		boolean hasNormal = imageFiles != null && Arrays.stream(imageFiles).anyMatch(f -> f.getName().equalsIgnoreCase("normal.png"));
+		if (!hasNormal)
 		{
 			throw new RuntimeException("Normal.png が見つかりません: " + spriteDir.getAbsolutePath());
 		}
@@ -195,7 +191,6 @@ public class LoadCharacterFile
 		return new CharacterModel(name, packageId, WindowDetailUtil.getWorkScreenBottom(), textbox, imageList,
 				dialogMap);
 	}
-
 	private static List<CharacterDialog> loadDialog(File dialogListXmlFile, String packageId)
 			throws Exception
 	{
@@ -215,7 +210,7 @@ public class LoadCharacterFile
 			String emotion = getTextContent(dialogElem, "Emotion");
 			String text = getTextContent(dialogElem, "Text");
 
-			if(text.trim().isEmpty() || emotion.trim().isEmpty())
+			if (text.trim().isEmpty() || emotion.trim().isEmpty())
 			{
 				continue;
 			}
@@ -242,7 +237,7 @@ public class LoadCharacterFile
 		for (Situation s : Situation.values())
 		{
 			NodeList situationNodes = root.getElementsByTagName(s.name());
-			if(situationNodes.getLength() > 0)
+			if (situationNodes.getLength() > 0)
 			{
 				Element situationElem = (Element) situationNodes.item(0);
 				NodeList dialogNodes = situationElem.getElementsByTagName("Dialog");
@@ -250,9 +245,9 @@ public class LoadCharacterFile
 				{
 					int dialogId = Integer.parseInt(dialogNodes.item(i).getTextContent());
 					CharacterDialog dialg = StreamUtil.filterFirst(dialogList, x -> x.id == dialogId);
-					if(dialg != null)
+					if (dialg != null)
 					{
-						if(!dialogMap.containsKey(s))
+						if (!dialogMap.containsKey(s))
 						{
 							List<CharacterDialog> situList = new ArrayList<CharacterDialog>();
 							dialogMap.put(s, situList);
@@ -268,40 +263,10 @@ public class LoadCharacterFile
 	private static String getTextContent(Element parent, String tagName)
 	{
 		NodeList nodes = parent.getElementsByTagName(tagName);
-		if(nodes.getLength() > 0)
+		if (nodes.getLength() > 0)
 		{
 			return nodes.item(0).getTextContent().trim();
 		}
 		return "";
-	}
-
-	private static BufferedImage resizeImage(BufferedImage image, CharacterImage setting)
-	{
-		double scale = setting.scale;
-
-		// 元のサイズ
-		int originalWidth = image.getWidth();
-		int originalHeight = image.getHeight();
-
-		// 新しいサイズを計算
-		int newWidth = (int) Math.round(originalWidth * scale);
-		int newHeight = (int) Math.round(originalHeight * scale);
-
-		// pivot座標をスケールに合わせて変更
-		setting.pivot.x = (int) Math.round(setting.pivot.x * scale);
-		setting.pivot.y = (int) Math.round(setting.pivot.y * scale);
-
-		// 新しい画像を作成
-		BufferedImage resizedImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = resizedImg.createGraphics();
-
-		// 描画品質を向上
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.drawImage(image, 0, 0, newWidth, newHeight, null);
-		g2.dispose();
-
-		return resizedImg;
 	}
 }

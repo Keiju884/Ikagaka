@@ -59,8 +59,10 @@ public class CharacterModel
 		int alpha = 0;
 		try
 		{
-			alpha = (paintDetail.getNowImage().image.getRGB(mousePos.x, mousePos.y) >> 24) & 0xff;
+
+			alpha = (paintDetail.getNowImage().image.getRGB(mousePos.x - paintDetail.getPaintPosition().x, mousePos.y - paintDetail.getPaintPosition().y) >> 24) & 0xff;
 		}
+
 		catch (ArrayIndexOutOfBoundsException e)
 		{
 			alpha = 0;
@@ -70,7 +72,7 @@ public class CharacterModel
 		boolean flag3 = mousePos.y >= paintDetail.getPaintPosition().y;
 		boolean flag4 = mousePos.y <= paintDetail.getPaintPosition().y + paintDetail.getImageSize().y;
 		boolean flag5 = alpha > 0;
-		return flag1 && flag2 && flag3 && flag4 && flag5;
+		return flag1 && flag2 && flag3 && flag4;
 	}
 
 	/**
@@ -79,32 +81,32 @@ public class CharacterModel
 	public void update()
 	{
 		paintDetail.updatePaintPosition();
-		if(paintDetail.isTextBoxAlphaZero())
+		if (paintDetail.isTextBoxAlphaZero())
 		{
 			paintDetail.resetTextBoxAlpha();
 			talkDetail.timerSetting();
 			talkDetail.setTalkEnd(false);
 		}
-		if(talkDetail.isTalkEnd())
+		if (talkDetail.isTalkEnd())
 		{
 			paintDetail.disTextBoxAlpha();
 			;
 		}
-		if(talkDetail.isTalkChangePre())
+		if (talkDetail.isTalkChangePre())
 		{
 			talkDetail.changeDialog();
 			paintDetail.changeNowImages(talkDetail.getNowDialog().emotion);
 			paintDetail.resetTextBoxAlpha();
 		}
-		if(talkDetail.isTalkEnd())
+		if (talkDetail.isTalkEnd())
 		{
 			talkDetail.timerReset();
 		}
-		if(!isDragMove)
+		if (!isDragMove)
 		{
 			setStopPostion();
 		}
-		if(!talkDetail.stopTalk)
+		if (!talkDetail.stopTalk)
 		{
 			talkDetail.addTimer();
 			;
