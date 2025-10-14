@@ -10,9 +10,9 @@ public class CharacterModel
 	private String packageId;
 
 	private Vector2Int position;
-	
+
 	public CharacterPaintDetail paintDetail;
-	
+
 	public CharacterTalkDetail talkDetail;
 
 	public boolean isDragMove;
@@ -59,18 +59,18 @@ public class CharacterModel
 		int alpha = 0;
 		try
 		{
-			alpha = (paintDetail.getNowImage().image.getRGB(mousePos.x - paintDetail.paintPosition.x,
-					mousePos.y - paintDetail.paintPosition.y) >> 24)
-					& 0xff;
+			alpha = (paintDetail.getNowImage().image.getRGB(mousePos.x, mousePos.y) >> 24) & 0xff;
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
 			alpha = 0;
 		}
-		return (mousePos.x >= paintDetail.paintPosition.x
-				&& mousePos.x <= paintDetail.paintPosition.x + paintDetail.getNowImage().size
-				&& mousePos.y >= paintDetail.paintPosition.y
-				&& mousePos.y <= paintDetail.paintPosition.y + paintDetail.getNowImage().size && alpha > 0);
+		boolean flag1 = mousePos.x >= paintDetail.getPaintPosition().x;
+		boolean flag2 = mousePos.x <= paintDetail.getPaintPosition().x + paintDetail.getImageSize().x;
+		boolean flag3 = mousePos.y >= paintDetail.getPaintPosition().y;
+		boolean flag4 = mousePos.y <= paintDetail.getPaintPosition().y + paintDetail.getImageSize().y;
+		boolean flag5 = alpha > 0;
+		return flag1 && flag2 && flag3 && flag4 && flag5;
 	}
 
 	/**
@@ -87,7 +87,8 @@ public class CharacterModel
 		}
 		if(talkDetail.isTalkEnd())
 		{
-			paintDetail.disTextBoxAlpha();;
+			paintDetail.disTextBoxAlpha();
+			;
 		}
 		if(talkDetail.isTalkChangePre())
 		{
@@ -105,7 +106,8 @@ public class CharacterModel
 		}
 		if(!talkDetail.stopTalk)
 		{
-			talkDetail.addTimer();;
+			talkDetail.addTimer();
+			;
 		}
 	}
 

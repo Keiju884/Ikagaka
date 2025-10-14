@@ -51,6 +51,11 @@ public class Vector2Int
 		this.y += vec.y;
 	}
 	
+	public Vector2Int addVector(Vector2Int vec)
+	{
+		return new Vector2Int(this.x + vec.x,this.y + vec.y);
+	}
+	
 
 	public String toString()
 	{

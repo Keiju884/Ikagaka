@@ -311,11 +311,11 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 		{
 			if(e.getWheelRotation() == -1)
 			{
-				clickModel.paintDetail.changeImageSizeRate(-0.05);
+				clickModel.paintDetail.changeImageSizeRate(0.05);
 			}
 			else if(e.getWheelRotation() == 1)
 			{
-				clickModel.paintDetail.changeImageSizeRate(0.05);
+				clickModel.paintDetail.changeImageSizeRate(-0.05);
 			}
 		}
 	}

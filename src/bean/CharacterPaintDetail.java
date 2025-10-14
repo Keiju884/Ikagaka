@@ -121,8 +121,8 @@ public class CharacterPaintDetail
 
 	public Vector2Int getCenterPosition()
 	{
-		int x = getPaintPosition().x + (int)(getNowImage().pivot.x * getImageSizeRate());
-		int y = getPaintPosition().y + (int)(getNowImage().pivot.y * getImageSizeRate());
+		int x = getPaintPosition().x + (int) (getNowImage().pivot.x * getImageSizeRate());
+		int y = getPaintPosition().y + (int) (getNowImage().pivot.y * getImageSizeRate());
 		return new Vector2Int(x, y);
 	}
 
@@ -143,10 +143,12 @@ public class CharacterPaintDetail
 	{
 		return this.imageSizeRate;
 	}
-	
+
 	public Vector2Int getImageSize()
 	{
-		return new Vector2Int((int)(getNowImage().image.getWidth() * getImageSizeRate()), (int)(getNowImage().image.getHeight() * getImageSizeRate()));
+		int w = (int) (getNowImage().image.getWidth() * getNowImage().scale * getImageSizeRate());
+		int h = (int) (getNowImage().image.getHeight() * getNowImage().scale * getImageSizeRate());
+		return new Vector2Int(w, h);
 	}
 
 	public List<CharacterImage> getImageList()

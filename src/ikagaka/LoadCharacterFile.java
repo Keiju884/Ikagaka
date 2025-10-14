@@ -156,11 +156,11 @@ public class LoadCharacterFile
 			String spriteName = spriteElem.getAttribute("Sprite");
 
 			Element settingElem = (Element) spriteElem.getElementsByTagName("Setting").item(0);
-			int size = Integer.parseInt(settingElem.getAttribute("Size"));
+			double scale = Double.parseDouble(settingElem.getAttribute("Scale"));
 			int pivotX = Integer.parseInt(settingElem.getAttribute("Pivot_X"));
 			int pivotY = Integer.parseInt(settingElem.getAttribute("Pivot_Y"));
 
-			spriteSettings.add(new CharacterImage(spriteName, null, new Vector2Int(pivotX, pivotY), size));
+			spriteSettings.add(new CharacterImage(spriteName, null, new Vector2Int(pivotX, pivotY), scale));
 		}
 
 		// 画像読み込み
@@ -176,10 +176,11 @@ public class LoadCharacterFile
 				CharacterImage setting = StreamUtil.filterFirst(spriteSettings, x -> imageName.contains(x.imageName));
 				if(setting != null)
 				{
-					image = resizeImage(image, setting);
-					Vector2Int pivot = new Vector2Int(setting.pivot.x, setting.pivot.y);
-					int size = setting.size;
-					imageList.add(new CharacterImage(imageName, image, pivot, size));
+					//image = resizeImage(image, setting);
+					int x = (int) Math.round(setting.pivot.x * setting.scale);
+					int y = (int) Math.round(setting.pivot.y * setting.scale);
+					Vector2Int pivot = new Vector2Int(x, y);
+					imageList.add(new CharacterImage(imageName, image, pivot, setting.scale));
 				}
 			}
 		}
@@ -191,7 +192,8 @@ public class LoadCharacterFile
 			throw new RuntimeException("Normal.png が見つかりません: " + spriteDir.getAbsolutePath());
 		}
 
-		return new CharacterModel(name, packageId, WindowDetailUtil.getWorkScreenBottom(), textbox, imageList, dialogMap);
+		return new CharacterModel(name, packageId, WindowDetailUtil.getWorkScreenBottom(), textbox, imageList,
+				dialogMap);
 	}
 
 	private static List<CharacterDialog> loadDialog(File dialogListXmlFile, String packageId)
@@ -275,25 +277,28 @@ public class LoadCharacterFile
 
 	private static BufferedImage resizeImage(BufferedImage image, CharacterImage setting)
 	{
-		// 元の幅・高さ
+		double scale = setting.scale;
+
+		// 元のサイズ
 		int originalWidth = image.getWidth();
 		int originalHeight = image.getHeight();
 
-		// 幅を size にして、高さは比率で計算
-		int newWidth = (int) Math.round((double) originalWidth * setting.size / originalHeight);
-		int newHeight = setting.size;
+		// 新しいサイズを計算
+		int newWidth = (int) Math.round(originalWidth * scale);
+		int newHeight = (int) Math.round(originalHeight * scale);
 
-		double scaleX = (double) newWidth / originalWidth;
-		double scaleY = (double) newHeight / originalHeight;
-		setting.pivot.x = (int) Math.round(setting.pivot.x * scaleX);
-		setting.pivot.y = (int) Math.round(setting.pivot.y * scaleY);
+		// pivot座標をスケールに合わせて変更
+		setting.pivot.x = (int) Math.round(setting.pivot.x * scale);
+		setting.pivot.y = (int) Math.round(setting.pivot.y * scale);
 
 		// 新しい画像を作成
 		BufferedImage resizedImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = resizedImg.createGraphics();
 
-		// アンチエイリアスなどの描画品質設定
+		// 描画品質を向上
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.drawImage(image, 0, 0, newWidth, newHeight, null);
 		g2.dispose();
 
