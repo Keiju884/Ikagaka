@@ -60,7 +60,7 @@ public class LoadSaveFile
 			boolean created = saveDir.mkdirs();
 			if(!created)
 			{
-				LogWriterNew.writeLog("保存フォルダの作成に失敗しました: " + saveDir.getAbsolutePath());
+				LogWriterNew.writeLog("保存フォルダの作成に失敗しました: " + saveDir.getAbsolutePath(), true);
 			}
 		}
 		return saveDir;
@@ -74,11 +74,10 @@ public class LoadSaveFile
 		try (FileWriter writer = new FileWriter(saveFile))
 		{
 			writer.write(packageId);
-			LogWriterNew.writeLog("packageIdを保存しました: " + packageId +":" + saveFile.getAbsolutePath());
 		}
 		catch (IOException e)
 		{
-			LogWriterNew.writeLog(e.toString());
+			LogWriterNew.writeLog(e.toString(), true);
 		}
 	}
 
@@ -93,12 +92,11 @@ public class LoadSaveFile
 		try
 		{
 			String s = Files.readString(saveFile.toPath());
-			LogWriterNew.writeLog("packageIdを読み込みました:"+ s);
 			return s;
 		}
 		catch (IOException e)
 		{
-			LogWriterNew.writeLog(e.toString());
+			LogWriterNew.writeLog(e.toString(), true);
 			return null;
 		}
 	}

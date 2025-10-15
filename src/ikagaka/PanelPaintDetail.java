@@ -8,6 +8,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import bean.CharacterDialog;
+import bean.CharacterImage;
 import bean.CharacterModel;
 import bean.Vector2Int;
 import utils.WindowDetailUtil;
@@ -18,12 +19,13 @@ public class PanelPaintDetail
 	{
 		Vector2Int pos = model.paintDetail.getPaintPosition();
 		g2d.setClip(getPaintClip(model));
-		BufferedImage image = model.paintDetail.getNowImage().image;
+		CharacterImage characterImage = model.paintDetail.getNowImage();
+		BufferedImage image = characterImage.getImage();
 		Vector2Int imageSize = model.paintDetail.getImageSize();
 		g2d.drawImage(image, pos.x, pos.y, imageSize.x, imageSize.y, null);
-		if(model.paintDetail.getNowFrontImage() != null)
+		if(characterImage.isFrontImage())
 		{
-			BufferedImage frontImage = model.paintDetail.getNowFrontImage().image;
+			BufferedImage frontImage = characterImage.getFrontImage();
 			g2d.setClip(null);
 			g2d.drawImage(frontImage, pos.x, pos.y, imageSize.x, imageSize.y, null);
 		}

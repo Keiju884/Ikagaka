@@ -17,17 +17,18 @@ public class CharacterFrame extends JFrame
 
 	CharacterPanel panle;
 
-	public CharacterFrame(List<CharacterModel> characterList)
+	public CharacterFrame()
 	{
 		super("如何か");
-		if(characterList.size() <= 0)
+		List<CharacterModel> list = LoadCharacter.Instance().loadAllCharacter();
+		if(list == null || list.size() <= 0)
 		{
-		    JLabel label = new JLabel("Characterが存在しません");
-		    label.setForeground(Color.RED);
-		    JOptionPane.showMessageDialog(this, label,"エラー",JOptionPane.ERROR_MESSAGE);
-		    Ikagaka.exit(null);
+			JLabel label = new JLabel("Characterが存在しません");
+			label.setForeground(Color.RED);
+			JOptionPane.showMessageDialog(this, label, "エラー", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		}
-		this.characterList = characterList;
+		this.characterList = list;
 		this.panle = new CharacterPanel(this.characterList);
 		init();
 		update();
@@ -65,8 +66,20 @@ public class CharacterFrame extends JFrame
 			if(now - last >= FRAME_TIME)
 			{
 				last = now;
-				panle.update();
-				repaint();
+				try
+				{
+					panle.update(); // ←ここで例外が出る可能性あり
+					repaint();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					// 例外発生時にアプリ終了
+					JOptionPane.showMessageDialog(this,
+							"致命的なエラーが発生しました: " + e.getMessage(),
+							"エラー", JOptionPane.ERROR_MESSAGE);
+					System.exit(1);
+				}
 			}
 
 			try
@@ -75,6 +88,7 @@ public class CharacterFrame extends JFrame
 			}
 			catch (InterruptedException e)
 			{
+				Thread.currentThread().interrupt();
 			}
 		}
 	}

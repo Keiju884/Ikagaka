@@ -56,22 +56,10 @@ public class CharacterModel
 
 	public boolean contains(Vector2Int mousePos)
 	{
-		int alpha = 0;
-		try
-		{
-
-			alpha = (paintDetail.getNowImage().image.getRGB(mousePos.x - paintDetail.getPaintPosition().x, mousePos.y - paintDetail.getPaintPosition().y) >> 24) & 0xff;
-		}
-
-		catch (ArrayIndexOutOfBoundsException e)
-		{
-			alpha = 0;
-		}
 		boolean flag1 = mousePos.x >= paintDetail.getPaintPosition().x;
 		boolean flag2 = mousePos.x <= paintDetail.getPaintPosition().x + paintDetail.getImageSize().x;
 		boolean flag3 = mousePos.y >= paintDetail.getPaintPosition().y;
 		boolean flag4 = mousePos.y <= paintDetail.getPaintPosition().y + paintDetail.getImageSize().y;
-		boolean flag5 = alpha > 0;
 		return flag1 && flag2 && flag3 && flag4;
 	}
 

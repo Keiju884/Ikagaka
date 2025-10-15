@@ -130,6 +130,10 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 			CharacterModel createModel = new CharacterModel(model);
 			createModel.setPosition(p);
 			activeCharacterList.add(createModel);
+			if(clickModel.getPackageId() != null && !clickModel.getPackageId().isEmpty())
+			{
+				LoadSaveFile.Instance().save(clickModel.getPackageId());
+			}
 		}
 
 	}

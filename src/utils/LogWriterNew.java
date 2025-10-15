@@ -23,7 +23,7 @@ public class LogWriterNew
 		}
 	}
 
-	public static synchronized void writeLog(String text)
+	public static synchronized void writeLog(String text,boolean isError)
 	{
 		Calendar calendar = Calendar.getInstance();
 
@@ -34,7 +34,14 @@ public class LogWriterNew
 		File file = new File(file_name);
 		FileWriter fw = null;
 		String line = sdf.format(date) + "," + text;
-		System.out.println(line);
+		if(isError)
+		{
+			System.err.println(text);
+		}
+		else
+		{
+			System.out.println(text);
+		}
 		try
 		{
 			fw = new FileWriter(file, true);
