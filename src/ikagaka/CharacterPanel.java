@@ -66,9 +66,9 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 
 	public void update()
 	{
-		windows = WindowDetailUtil.getWindows();
 		if(activeCharacterList.size() > 0)
 		{
+			windows = WindowDetailUtil.getWindows();
 			for (CharacterModel model : activeCharacterList)
 			{
 				moveWindow(model);

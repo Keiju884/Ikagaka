@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
@@ -11,6 +12,7 @@ import bean.CharacterDialog;
 import bean.CharacterImage;
 import bean.CharacterModel;
 import bean.Vector2Int;
+import bean.WindowInfo;
 import utils.WindowDetailUtil;
 
 public class PanelPaintDetail
@@ -70,6 +72,13 @@ public class PanelPaintDetail
 		{
 			g2d.drawString(textAry[i - 1], rectX, textBoxPosY + textSize.y * i);
 		}
+	}
+	
+	public void paintWindows(Graphics2D g2d, WindowInfo win)
+	{
+		Rectangle rec = win.rect.toRectangle();
+		g2d.setColor(Color.red);
+		g2d.draw(rec);
 	}
 
 	private Vector2Int getTextBoxSize(Vector2Int textSize, int textLength, int padding)

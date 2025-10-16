@@ -16,7 +16,7 @@ import com.sun.jna.platform.win32.WinDef.RECT;
 
 import bean.Vector2Int;
 import bean.WindowInfo;
-import myUser.MyUser32;
+import windowsAPI.MyUser32;
 
 public final class WindowDetailUtil
 {
@@ -46,17 +46,19 @@ public final class WindowDetailUtil
 			Rectangle bounds = gc.getBounds();
 			Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
 
-			if (insets.top > 0)
+			if(insets.top > 0)
 				taskbarArea.add(new Area(new Rectangle2D.Double(bounds.x, bounds.y, bounds.width, insets.top)));
 
-			if (insets.bottom > 0)
-				taskbarArea.add(new Area(new Rectangle2D.Double(bounds.x, bounds.y + bounds.height - insets.bottom, bounds.width, insets.bottom)));
+			if(insets.bottom > 0)
+				taskbarArea.add(new Area(new Rectangle2D.Double(bounds.x, bounds.y + bounds.height - insets.bottom,
+						bounds.width, insets.bottom)));
 
-			if (insets.left > 0)
+			if(insets.left > 0)
 				taskbarArea.add(new Area(new Rectangle2D.Double(bounds.x, bounds.y, insets.left, bounds.height)));
 
-			if (insets.right > 0)
-				taskbarArea.add(new Area(new Rectangle2D.Double(bounds.x + bounds.width - insets.right, bounds.y, insets.right, bounds.height)));
+			if(insets.right > 0)
+				taskbarArea.add(new Area(new Rectangle2D.Double(bounds.x + bounds.width - insets.right, bounds.y,
+						insets.right, bounds.height)));
 		}
 
 		return taskbarArea;
@@ -84,29 +86,55 @@ public final class WindowDetailUtil
 		// --- ウィンドウ列挙（前面から順）---
 		user32.EnumWindows((hWnd, data) ->
 		{
-			if(!user32.IsWindowVisible(hWnd))
-				return true;
-
-			RECT rect = new RECT();
-			user32.GetWindowRect(hWnd, rect);
-			if(rect.left == 0 && rect.right == 0 && rect.top == 0 && rect.bottom == 0)
-				return true; // 不正座標は無視
-
-			char[] buffer = new char[512];
-			user32.GetWindowTextW(hWnd, buffer, 512);
-			String title = Native.toString(buffer);
-
-			// 特定ウィンドウをスキップ
-			if(title.contains("如何か"))
+			try
 			{
-				return true;
+				if(!user32.IsWindowVisible(hWnd))
+					return true;
+
+				RECT rect = new RECT();
+				if(!user32.GetWindowRect(hWnd, rect))
+					return true; // 座標取得失敗
+
+				if(rect.left == 0 && rect.right == 0 && rect.top == 0 && rect.bottom == 0)
+					return true;
+
+				char[] buffer = new char[512];
+				int textLen = user32.GetWindowTextW(hWnd, buffer, 512);
+				if(textLen == 0)
+					return true; // タイトルなし
+
+				String title = Native.toString(buffer);
+				if(title == null || title.isBlank())
+					return true;
+
+				// 特定ウィンドウをスキップ
+				if(title.contains("如何か"))
+					return true;
+				int dpi = user32.GetDpiForWindow(hWnd);
+				double scale = dpi / 96.0;
+				
+				int left = (int) Math.round(rect.left / scale);
+				int top = (int) Math.round(rect.top / scale);
+				int right = (int) Math.round(rect.right / scale);
+				int bottom = (int) Math.round(rect.bottom / scale);
+
+				RECT scaledRect = new RECT();
+				scaledRect.left = left;
+				scaledRect.top = top;
+				scaledRect.right = right;
+				scaledRect.bottom = bottom;
+
+				list.add(new WindowInfo(hWnd, scaledRect, title));
 			}
-			list.add(new WindowInfo(hWnd, rect, title));
+			catch (Throwable e)
+			{
+				// Exception + Error どちらも確実に捕捉
+				LogWriterNew.writeLog("EnumWindows例外: " + e, true);
+			}
 			return true;
 		}, null);
 
 		return list;
 	}
-
 
 }

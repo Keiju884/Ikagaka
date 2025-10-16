@@ -5,7 +5,7 @@ import java.text.MessageFormat;
 import com.sun.jna.platform.win32.WinDef.HWND;
 import com.sun.jna.platform.win32.WinDef.RECT;
 
-import myUser.MyUser32;
+import windowsAPI.MyUser32;
 
 public class WindowInfo
 {
@@ -22,7 +22,7 @@ public class WindowInfo
 	
 	public String toString()
 	{
-		return MessageFormat.format("[{0}:{1}:{2}]", hWnd, rect,title);
+		return MessageFormat.format("[{0}:{1}:{2}:{3}]", hWnd, rect,title);
 	}
 
 	public boolean isMinimized()

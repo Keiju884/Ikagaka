@@ -6,11 +6,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="lib" path="lib/jna-jpms-5.18.1.jar"/>
 	<classpathentry kind="lib" path="lib/jna-platform-5.18.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/3030915/Desktop/授業用/作品置き場/如何か/Ikagaka_ver.0.1.2/Ikagaka-20251007T235943Z-1-001/Ikagaka/lib/jakarta.xml.bind-api-4.0.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/3030915/Desktop/授業用/作品置き場/如何か/Ikagaka_ver.0.1.2/Ikagaka-20251007T235943Z-1-001/Ikagaka/lib/jaxb-runtime-4.0.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/3030915/Desktop/授業用/作品置き場/如何か/Ikagaka_ver.0.1.2/Ikagaka-20251007T235943Z-1-001/Ikagaka/lib/jakarta.activation-api-2.1.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/3030915/Desktop/授業用/作品置き場/如何か/Ikagaka_ver.0.1.2/Ikagaka-20251007T235943Z-1-001/Ikagaka/lib/jaxb-core-4.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta.activation-api-2.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta.xml.bind-api-4.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-core-4.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-runtime-4.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

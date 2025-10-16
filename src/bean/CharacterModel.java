@@ -144,6 +144,10 @@ public class CharacterModel
 	{
 		return stopPostion;
 	}
+	public boolean isOnWindow()
+	{
+		return onWindow != null;
+	}
 
 	public WindowInfo getOnWindow()
 	{
