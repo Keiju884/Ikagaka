@@ -31,6 +31,11 @@ public class PanelPaintDetail
 			g2d.setClip(null);
 			g2d.drawImage(frontImage, pos.x, pos.y, imageSize.x, imageSize.y, null);
 		}
+		g2d.setColor(Color.red);
+		g2d.fillRect(model.getPosition().x, model.getPosition().y, 10, 10);
+		
+		g2d.setColor(Color.black);
+		g2d.fillRect(pos.x, pos.y, 10, 10);
 
 	}
 

@@ -32,7 +32,7 @@ public class CharacterPaintDetail
 
 	public void updatePaintPosition()
 	{
-		int x = (int) (owner.getPosition().x - (getNowImage().getPivot().x * 1.5 * getImageSizeRate()));
+		int x = (int) (owner.getPosition().x - (getNowImage().getPivot().x * getImageSizeRate()));
 		int y = (int) (owner.getPosition().y - getNowImage().getPivot().y * getImageSizeRate());
 		this.paintPosition.set(x, y);
 	}

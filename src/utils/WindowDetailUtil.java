@@ -20,10 +20,15 @@ import windowsAPI.MyUser32;
 
 public final class WindowDetailUtil
 {
+	public static Rectangle getWorkScreenRect()
+	{
+		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+		return gc.getBounds();
+	}
+	
 	public static Vector2Int getWorkScreenBottom()
 	{
-		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
+		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 		Rectangle fullBounds = gc.getBounds();
 		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
 		int bottomRightX = fullBounds.x + fullBounds.width - screenInsets.right;

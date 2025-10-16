@@ -104,8 +104,6 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 	public void createCharacterModel(CharacterModel model)
 	{
 		CharacterModel createModel = new CharacterModel(model);
-		createModel.setPosition(createModel.getPosition().x - activeCharacterList.size() * 30,
-				createModel.getPosition().y);
 		activeCharacterList.add(createModel);
 	}
 

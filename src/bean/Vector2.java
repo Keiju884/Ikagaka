@@ -56,6 +56,11 @@ public class Vector2
 		return new Vector2(this.x + vec.x,this.y + vec.y);
 	}
 	
+	public Vector2 addVector(double x , double y)
+	{
+		return new Vector2(this.x + x,this.y + y);
+	}
+	
 
 	public String toString()
 	{

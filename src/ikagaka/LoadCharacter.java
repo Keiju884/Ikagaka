@@ -113,7 +113,7 @@ public class LoadCharacter
 			Map<Situation, List<CharacterDialog>> dialogMap = setDialogMap(setDialogFile, dialogList);
 
 			CharacterModel model = new CharacterModel(characterInfo.name, packageId,
-					WindowDetailUtil.getWorkScreenBottom(),
+					new Vector2Int(WindowDetailUtil.getWorkScreenRect().width / 2,WindowDetailUtil.getWorkScreenBottom().y),
 					spriteDataXml.textBoxPivot, imageList, dialogMap);
 
 			LogWriterNew.writeLog("読み込み成功: " + model.getName(), false);
