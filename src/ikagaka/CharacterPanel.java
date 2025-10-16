@@ -2,8 +2,6 @@ package ikagaka;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -172,11 +170,10 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 		if(model != null && isLeftClick)
 		{
 			model.isDragMove = true;
-			Point p = MouseInfo.getPointerInfo().getLocation();
-			int xMoved = p.x - clickPosition.x;
-			int yMoved = p.y - clickPosition.y;
+			int xMoved = mousePosition.x - clickPosition.x;
+			int yMoved = mousePosition.y - clickPosition.y;
 			int y = model.getStopPostion().y + yMoved;
-			WindowInfo window = mouseOnWindow(p,model.paintDetail.getCenterPosition());
+			WindowInfo window = mouseOnWindow(mousePosition,model.paintDetail.getCenterPosition());
 			if(window != null)
 			{
 				model.setOnWindow(window);
@@ -186,7 +183,7 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 			{
 				model.setOnWindow(null);
 			}
-			model.setPosition(model.getStopPostion().x + xMoved, y);
+			model.setPosition(xMoved + model.getStopPostion().x, y);
 			if(WindowDetailUtil.getWorkScreenBottom().y < y)
 			{
 				y = WindowDetailUtil.getWorkScreenBottom().y;
@@ -224,7 +221,7 @@ public class CharacterPanel extends JPanel implements ListenerHandler
 		}
 	}
 
-	private WindowInfo mouseOnWindow(Point p, Vector2Int pos)
+	private WindowInfo mouseOnWindow(Vector2Int p, Vector2Int pos)
 	{
 		WindowInfo window = null;
 		for (WindowInfo win : this.windows)
