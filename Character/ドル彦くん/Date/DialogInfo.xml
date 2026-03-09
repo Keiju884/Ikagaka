@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- DialogのList -->
+<DialogList>
+	<!-- DialogのID -->
+	<Dialog ID="1">
+		<!-- 感情 その要素の名前と同じ画像をCharacterに表示させる -->
+		<Emotion>Normal</Emotion>
+		<!-- 会話内容 -->
+		<Text>何について調べますか？</Text>
+	</Dialog>
+	<Dialog ID="2">
+	<Emotion>Normal</Emotion>
+		<!-- 会話内容 -->
+		<Text>質問の意味が分かりません。
+		他の言葉を使って試してみてください！</Text>
+	</Dialog>
+	<Dialog ID="3">
+		<Emotion>Normal</Emotion>
+		<!-- 会話内容 -->
+		<Text>'Book1'への変更を保存しますか？</Text>
+	</Dialog>
+	<Dialog ID="4">
+		<Emotion>Normal</Emotion>
+		<!-- 会話内容 -->
+		<Text>僕を消すには、僕の上でマウスの右のボタンをクリックしてみて。
+		そうするとメニューに「キャラクターを消去」ボタンが出てくるから、
+		それを押すといなくなるよ。</Text>
+	</Dialog>
+</DialogList>

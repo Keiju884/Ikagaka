@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Character>
+	<!-- キャラクターの名前 -->
+	<Name>ドル彦くん</Name>
+	<!-- 製作者 -->
+	<Actor>パースペクティブ</Actor>
+	<!-- パッケージID -->
+	<PackageId>dolphiko_Kun</PackageId>
+	<!-- パッケージの説明 -->
+	<Description>お前を消す方法</Description>
+</Character>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Sprite>
+	<TextBoxPivot>200</TextBoxPivot>
+
+	<SpriteSettingList>
+		<SpriteSetting Sprite="Normal">
+			<Setting Scale="0.5" Pivot_X="350" Pivot_Y="350" />
+		</SpriteSetting>
+	</SpriteSettingList>
+</Sprite>

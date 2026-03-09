@@ -1,3 +1,12 @@
-/ikagaka/
 /bean/
+/handler/
+/ikagaka/
+/jakarta.activation-api-2.1.4.jar
+/jakarta.xml.bind-api-4.0.4.jar
+/jaxb-core-4.0.2.jar
+/jaxb-runtime-4.0.6.jar
+/jna-jpms-5.18.1.jar
+/jna-platform-5.18.1.jar
 /utils/
+/windowsAPI/
+/xml/

@@ -20,7 +20,7 @@
 ただずっとあなたに微笑み続けるだけなの</Text>
 	</Dialog>
 	<Dialog ID="4">
-		<Emotion>Emotionless</Emotion>
+		<Emotion>Normal</Emotion>
 		<Text>自分の痛みは言葉に表せても、痛み自体は他人には伝わらないの
 「その気持ち分かるよ」なんて気軽に言っちゃダメなの</Text>
 	</Dialog>
